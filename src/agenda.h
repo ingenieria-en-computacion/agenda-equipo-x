@@ -8,9 +8,9 @@ enum Mes{ENERO, FEBERO, MARZO, ABRIL, MAYO, JUNIO, JULIO, SEPTIEMBRE, OCTUBRE, N
 
 struct Persona{
     char nombre[30];
-    // apellido
-    // mes de nacimiento
-    // dia de nacimiento
+    char apellido[30];
+    int mes_nacimiento;
+    int dia_nacimiento;
     // tipo contacto
     // numero de telefono
     // tipo de numero
