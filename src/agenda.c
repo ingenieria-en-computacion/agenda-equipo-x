@@ -2,33 +2,39 @@
 #include <stdio.h>
 #include <string.h>
 
-// Esta función se encarga de iniciar el número de contactos a cero
+// ───────────────────────────────────────────────
+// Inicializa la agenda
+// ───────────────────────────────────────────────
 void iniciar_agenda(Agenda *agenda){
     agenda->num_contactos = 0;
 }
 
-// Varible que lleva la cuenta de cuantos contactos hay en la agenda
+// Variable que lleva la cuenta de contactos (NO usada)
 int num_contactos;
 
-// Esta función sirve para agregar un contacto nuevo en la agenda
+// ───────────────────────────────────────────────
+// Agregar contacto
+// ───────────────────────────────────────────────
 void agregar_contacto(Agenda *agenda, Contacto c){
     if (buscar_contacto_x_telefono(agenda, c.telefono) != -1){
-    printf("Ya existe un contacto con ese número telefónico.\n\n");
+        printf("\n\033[91mYa existe un contacto con ese número telefónico.\033[0m\n\n");
         return;
     }
+
     if (agenda->num_contactos < MAX_CONTACTOS){
         agenda->contactos[agenda->num_contactos] = c;
         agenda->num_contactos++;
     }
     else{
-        printf("La agenda está llena, no se puede agregar más contactos.\n");
+        printf("\n\033[91mLa agenda está llena, no se puede agregar más contactos.\033[0m\n");
     }
 }
 
-// Esta función sirve para buscar un contacto por nombre en la agenda y retorna la posición del contacto si exisite
-// En caso contrario retorna -1
+// ───────────────────────────────────────────────
+// Buscar por nombre
+// ───────────────────────────────────────────────
 int buscar_contacto(Agenda *agenda, char *nombre){
-    for (int i = 0, j = agenda->num_contactos; i < j; i++){
+    for (int i = 0; i < agenda->num_contactos; i++){
         if (strcmp(agenda->contactos[i].nombre, nombre) == 0){
             return i;
         }
@@ -36,7 +42,9 @@ int buscar_contacto(Agenda *agenda, char *nombre){
     return -1;
 }
 
-// Esta función  sirve para buscar un contacto por su número de telefono en la agenda
+// ───────────────────────────────────────────────
+// Buscar por teléfono
+// ───────────────────────────────────────────────
 int buscar_contacto_x_telefono(Agenda *agenda, char telefono[]){
     for (int i = 0; i < agenda->num_contactos; i++){
         if (strcmp(agenda->contactos[i].telefono, telefono) == 0){
@@ -46,14 +54,14 @@ int buscar_contacto_x_telefono(Agenda *agenda, char telefono[]){
     return -1;
 }
 
-// Esta función sirve para ordenar los contactos por nombres de forma ascendente
+// ───────────────────────────────────────────────
+// Orden ascendente A → Z
+// ───────────────────────────────────────────────
 void ordenar_contactos(Agenda *a){
-    int i, j;
-    Contacto temp;
-    for (i = 0; i < a->num_contactos; i++){
-        for (j = 0; j < a->num_contactos - i - 1; j++){
+    for (int i = 0; i < a->num_contactos; i++){
+        for (int j = 0; j < a->num_contactos - i - 1; j++){
             if (strcmp(a->contactos[j].nombre, a->contactos[j + 1].nombre) > 0){
-                temp = a->contactos[j];
+                Contacto temp = a->contactos[j];
                 a->contactos[j] = a->contactos[j + 1];
                 a->contactos[j + 1] = temp;
             }
@@ -61,14 +69,14 @@ void ordenar_contactos(Agenda *a){
     }
 }
 
-// Esta función sirve para ordenar los contactos por nombres de forma descendente
+// ───────────────────────────────────────────────
+// Orden descendente Z → A
+// ───────────────────────────────────────────────
 void ordenar_contactos_inv(Agenda *a){
-    int i, j;
-    Contacto temp;
-    for (i = 0; i < a->num_contactos; i++){
-        for (j = 0; j < a->num_contactos - i - 1; j++){
+    for (int i = 0; i < a->num_contactos; i++){
+        for (int j = 0; j < a->num_contactos - i - 1; j++){
             if (strcmp(a->contactos[j].nombre, a->contactos[j + 1].nombre) < 0){
-                temp = a->contactos[j];
+                Contacto temp = a->contactos[j];
                 a->contactos[j] = a->contactos[j + 1];
                 a->contactos[j + 1] = temp;
             }
@@ -76,109 +84,115 @@ void ordenar_contactos_inv(Agenda *a){
     }
 }
 
-// Función auxiliar para imprimir un contacto
+// ───────────────────────────────────────────────
+// Mostrar un contacto
+// ───────────────────────────────────────────────
 void mostrar_contacto(Contacto c){
-    printf("%s|%s|%d|%d|%s|%d\n", c.nombre, c.apellido, c.dia_nacimiento, c.mes_nacimiento, c.telefono, c.tipo_numero);
+    printf("%s|%s|%d|%d|%s|%d\n",c.nombre,c.apellido,c.dia_nacimiento,c.mes_nacimiento,c.telefono,c.tipo_numero);
 }
 
-// Función auxiliar para leer un contacto
+// ───────────────────────────────────────────────
+// Leer un contacto desde teclado
+// ───────────────────────────────────────────────
 void leer_contacto(Contacto *c){
     int valido;
     do{
-        int dias_por_mes[] ={31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int dias_por_mes[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         valido = 1;
 
-        printf("Ingrese el nombre: ");
+        printf("\nIngrese el nombre: ");
         scanf("%s", c->nombre);
-        printf("Ingrese el apellido: ");
+
+        printf("\nIngrese el apellido: ");
         scanf("%s", c->apellido);
-        printf("Ingrese el día de nacimiento: ");
+
+        printf("\nIngrese el día de nacimiento: ");
         scanf("%d", &c->dia_nacimiento);
-        printf("Ingrese el mes de nacimiento (0-11): ");
+
+        printf("\nIngrese el mes de nacimiento (1-12): ");
         scanf("%d", (int *)&c->mes_nacimiento);
-        printf("Ingrese el número de teléfono: ");
+
+        printf("\nIngrese el número de teléfono (10 dígitos): ");
         scanf("%s", c->telefono);
-        printf("Ingrese el tipo de número (0-CASA, 1-MOVIL, 2-OFICINA, 3-OTRO): ");
+
+        printf("\nIngrese el tipo de número (0-CASA, 1-MOVIL, 2-OFICINA, 3-OTRO): ");
         scanf("%d", (int *)&c->tipo_numero);
 
         // Validaciones
-        if (c->mes_nacimiento >= ENERO && c->mes_nacimiento <= DICIEMBRE){
-            if (c->dia_nacimiento < 1 || c->dia_nacimiento > dias_por_mes[c->mes_nacimiento]){
-                printf("Día inválido para el mes indicado.\n");
-                valido = 0;
-            }
+        if (c->mes_nacimiento < 1 || c->mes_nacimiento > 12){
+            printf("\n\033[91mMes fuera de rango.\033[0m\n");
+            valido = 0;
         }
-        else{
-            printf("Mes fuera de rango.\n");
+        else if (c->dia_nacimiento < 1 || c->dia_nacimiento > dias_por_mes[c->mes_nacimiento - 1]){
+            printf("\n\033[91mDía inválido para el mes indicado.\033[0m\n");
             valido = 0;
         }
 
         if (strlen(c->telefono) != 10){
-            printf("Número telefónico inválido.\n");
+            printf("\n\033[91mNúmero telefónico inválido (10 dígitos).\033[0m\n");
             valido = 0;
         }
 
         if (c->tipo_numero < CASA || c->tipo_numero > OTRO){
-            printf("Tipo de teléfono inválido.\n");
+            printf("\n\033[91mTipo de teléfono inválido.\033[0m\n");
             valido = 0;
         }
 
         if (!valido)
-            printf("\nSe encontraron errores. Ingrese todos los datos nuevamente.\n\n");
-    }while (!valido);
+            printf("\n\033[91mSe encontraron errores. Ingrese los datos nuevamente.\033[0m\n\n");
+
+    } while (!valido);
 }
 
-// Función que imprime todos los contactos de la agenda en pantalla
+// ───────────────────────────────────────────────
+// Imprimir agenda completa
+// ───────────────────────────────────────────────
 void imprimir_agenda(Agenda agenda){
     if (agenda.num_contactos == 0){
-        printf("~~~ Agenda vacía. ~~~\n");
+        printf("\n\033[91m~~~~~~~~~ Agenda vacía ~~~~~~~~~\033[0m\n");
         return;
     }
 
-    printf("\n~~~ Contactos en agenda ~~~\n");
+    printf("\n\033[92m~~~~~~~~~ Contactos en agenda ~~~~~~~~~\033[0m\n");
     for (int i = 0; i < agenda.num_contactos; i++){
         mostrar_contacto(agenda.contactos[i]);
     }
 }
 
-
-// Función que sirve para cargar contactos escritos en un archivo a la agenda
+// ───────────────────────────────────────────────
+// Cargar contactos desde archivo
+// ───────────────────────────────────────────────
 void cargar_contactos(char *filename, Agenda *agenda){
     FILE *file = fopen(filename, "r");
     if (!file){
-        printf("No se pudo abrir el archivo %s\n", filename);
+        printf("\n\033[91mNo se pudo abrir el archivo\033[0m \033[93m%s.txt\033[0m\n", filename);
         return;
     }
 
     Contacto c;
-    while (fscanf(file, "%[^|]|%[^|]|%d|%d|%[^|]|%d\n",
-                  c.nombre,
-                  c.apellido,
-                  &c.dia_nacimiento,
-                  (int *)&c.mes_nacimiento,
-                  c.telefono,
-                  (int *)&c.tipo_numero) == 6){
-
+    while (fscanf(file, "%[^|]|%[^|]|%d|%d|%[^|]|%d\n",c.nombre, c.apellido,&c.dia_nacimiento, (int *)&c.mes_nacimiento,c.telefono, (int *)&c.tipo_numero) == 6){
         agregar_contacto(agenda, c);
     }
 
     fclose(file);
-    printf("Contactos cargados correctamente desde %s.\n", filename);
+    printf("\n\033[92mContactos cargados correctamente desde\033[0m \033[93m%s.txt\033[0m\n", filename);
 }
 
-// Función que sirve para guardar todos los contactos de la agenda en un archivo
+// ───────────────────────────────────────────────
+// Guardar contactos en archivo
+// ───────────────────────────────────────────────
 void guardar_contactos(char *filename, Agenda agenda){
-      FILE *file = fopen(filename, "w");
+    FILE *file = fopen(filename, "w");
     if (!file){
-        printf("No se pudo abrir el archivo %s \n", filename);
+        printf("\n\033[91mNo se pudo abrir el archivo\033[0m \033[93m%s.txt\033[0m\n", filename);
         return;
     }
 
     for (int i = 0; i < agenda.num_contactos; i++){
         Contacto c = agenda.contactos[i];
-        fprintf(file, "%s|%s|%d|%d|%s|%d\n", c.nombre, c.apellido, c.dia_nacimiento, c.mes_nacimiento, c.telefono, c.tipo_numero);
+        fprintf(file, "%s|%s|%d|%d|%s|%d\n",c.nombre, c.apellido,c.dia_nacimiento, c.mes_nacimiento,c.telefono, c.tipo_numero);
     }
 
     fclose(file);
-    printf("Contactos guardados correctamente en %s.\n", filename);
+    printf("\n\033[92mContactos guardados correctamente en\033[0m \033[93m%s.txt\033[0m\n", filename);
 }
